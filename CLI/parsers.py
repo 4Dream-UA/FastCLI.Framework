@@ -2,6 +2,7 @@ import ast
 
 
 class BaseParser:
+
     @staticmethod
     def parse_params(args: list) -> dict:
         if "/:" not in args or ":/" not in args:
