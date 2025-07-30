@@ -23,5 +23,5 @@ class CommandWithoutRegisteredMissing(Exception):
         super().__init__(f"""
         You do not use all missing of commands!
         Anyway, just add {missing} missing to your command ...
-        like `python file.py foo :/ parm1=val1 parm2=val2 :/`.
+        like `python file.py foo /: parm1=val1 parm2=val2 :/`.
         """)
