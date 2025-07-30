@@ -11,3 +11,9 @@ class BaseValidater:
         if not func:
             return True
         return False
+
+    @staticmethod
+    def validate_missing(missing: list) -> bool:
+        if missing:
+            raise True
+        return False
