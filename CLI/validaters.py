@@ -6,8 +6,8 @@ from CLI.errors import (
 class BaseValidater:
 
     @staticmethod
-    def validate_not_args(args: list) -> Exception | None:
+    def validate_not_args(args: list) -> bool:
         if not args:
-            raise NoRegisteredCommandsInArguments()
+            return True
+        return False
 
-        return None
