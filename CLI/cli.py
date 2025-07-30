@@ -35,10 +35,11 @@ class CLI:
             return func
         return decorator
 
-    def main(self):
+    def main(self, cli_app: bool = True):
 
         args = sys.argv[1:]
-        if self.base_validator.validate_not_args(args=args):
+
+        if self.base_validator.validate_not_args(args=args) and cli_app:
             raise NoRegisteredCommandsInArguments()
 
         while args:
