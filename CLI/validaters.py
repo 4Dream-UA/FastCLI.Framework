@@ -34,5 +34,5 @@ class BaseValidater:
         :return:
         """
         if missing:
-            raise True
+            return True
         return False
