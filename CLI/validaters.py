@@ -1,8 +1,3 @@
-from CLI.errors import (
-    NoRegisteredCommandsInArguments
-)
-
-
 class BaseValidater:
 
     @staticmethod
@@ -11,3 +6,8 @@ class BaseValidater:
             return True
         return False
 
+    @staticmethod
+    def validate_not_func(func: callable) -> bool:
+        if not func:
+            return True
+        return False
