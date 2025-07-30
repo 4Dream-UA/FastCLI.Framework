@@ -19,9 +19,9 @@ class BaseParser:
         return params, remaining_args
 
     @staticmethod
-    def parse_multitypes(multitypes: bool, params: dict) -> bool:
+    def parse_multitypes(multitypes: bool, params: dict) -> dict:
         if multitypes:
             for param_key, param_value in params.items():
                 params[param_key] = ast.literal_eval(param_value)
-            return True
-        return False
+
+        return params
