@@ -82,5 +82,4 @@ class CLI:
                         print(f"Command '{cmd}' cancelled by user.")
                         continue
 
-            func(**params)
             print(func(**params))
