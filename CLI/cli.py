@@ -34,3 +34,52 @@ class CLI:
             }
             return func
         return decorator
+
+    def main(self):
+
+        args = sys.argv[1:]
+        if self.base_validator.validate_not_args(args=args):
+            raise NoRegisteredCommandsInArguments()
+
+        while args:
+            cmd = args[0]
+            func_info = self.commands.get(cmd)
+
+            if self.base_validator.validate_not_func(func=func_info):
+                raise UnexpectedCommandInArguments(cmd=cmd)
+
+            func = func_info.get("func")
+            multitypes = func_info.get("multitypes")
+            expose = func_info.get("expose")
+            expose_prompt = func_info.get("expose_prompt")
+            expose_yes_tag = func_info.get("expose_yes_tag")
+            expose_no_tag = func_info.get("expose_no_tag")
+
+            args = args[1:]
+            params, args = self.base_parser.parse_params(args)
+
+            sig = inspect.signature(func)
+            missing = [
+                name for name, p in sig.parameters.items()
+                if name not in params and p.default is inspect.Parameter.empty
+            ]
+            if self.base_validator.validate_missing(missing=missing):
+                raise CommandWithoutRegisteredMissing(missing=", ".join(missing))
+
+            params = self.base_parser.parse_multitypes(multitypes=multitypes, params=params)
+
+            if expose:
+                if expose_yes_tag in args:
+                    args.remove(expose_yes_tag)
+                elif expose_no_tag in args:
+                    args.remove(expose_no_tag)
+                    print(f"Command '{cmd}' skipped by user.")
+                    continue
+                else:
+                    confirm = input(expose_prompt).strip().lower()
+                    if confirm not in ("y", "yes", expose_yes_tag):
+                        print(f"Command '{cmd}' cancelled by user.")
+                        continue
+
+            func(**params)
+            print(func(**params))
