@@ -9,6 +9,7 @@ from CLI.errors import (
 from CLI.parsers import BaseParser
 from CLI.validaters import BaseValidater
 
+
 class CLI:
 
     def __init__(self):
@@ -27,6 +28,7 @@ class CLI:
         expose_no_tag: str = "--no",
         _help: str = None,
         params_help: dict = None,
+        alias: list = None,
     ) -> callable:
         def decorator(func):
             self.commands[name] = {
@@ -34,6 +36,7 @@ class CLI:
                 "expose": expose, "expose_prompt": expose_prompt,
                 "expose_yes_tag": expose_yes_tag, "expose_no_tag": expose_no_tag,
                 "_help": _help, "params_help": params_help,
+                "alias": alias,
             }
             return func
         return decorator
@@ -54,10 +57,9 @@ class CLI:
         if self.base_validator.validate_not_args(args=args) and cli_app:
             raise NoRegisteredCommandsInArguments()
 
-
         while args:
             cmd = args[0]
-            func_info = self.commands.get(cmd)
+            func_info = self.base_parser.parse_func_info(cmd, self.commands)
 
             if self.base_validator.validate_help_calling(args=args):
                 self.command_help(cmd=cmd, func_info=func_info)
