@@ -25,3 +25,17 @@ class BaseParser:
                 params[param_key] = ast.literal_eval(param_value)
 
         return params
+
+    @staticmethod
+    def parse_func_info(cmd: str, commands: dict) -> dict:
+        func_info = commands.get(cmd)
+
+        if func_info is None:
+            for value in commands.values():
+                if value["alias"] is None:
+                    continue
+
+                if cmd in value["alias"]:
+                    func_info = value
+
+        return func_info
