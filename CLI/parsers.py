@@ -39,3 +39,11 @@ class BaseParser:
                     func_info = value
 
         return func_info
+
+    @staticmethod
+    def parse_args(argv: list, debugging: bool, fake_args: list) -> list:
+        args = argv[1:]
+        if debugging and fake_args:
+            args = fake_args
+
+        return args
