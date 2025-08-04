@@ -42,9 +42,8 @@ class CLI:
         return decorator
 
 
-    def main(self, cli_app: bool = True):
-
-        args = sys.argv[1:]
+    def main(self, cli_app: bool = True, debugging: bool = False, fake_args: list = None):
+        args = self.base_parser.parse_args(sys.argv[1:], debugging, fake_args)
 
         if self.base_validator.validate_g_help(args=args):
             args.remove("--g-help")
