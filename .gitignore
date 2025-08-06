@@ -1,0 +1,4 @@
+.idea/
+*test_app.py
+*__pycache__/
+future.txt
