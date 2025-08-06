@@ -25,3 +25,10 @@ class CommandWithoutRegisteredMissing(Exception):
         Anyway, just add {missing} missing to your command ...
         like `python file.py foo /: parm1=val1 parm2=val2 :/`.
         """)
+
+class CommandWithoutRequiredArgument(Exception):
+    def __init__(self, required) -> None:
+        super().__init__(f"""
+        You do not use all required arguments!
+        Anyway, just add {required} required arguments to your command.
+        """)
