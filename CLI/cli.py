@@ -5,6 +5,7 @@ from CLI.errors import (
     NoRegisteredCommandsInArguments,
     UnexpectedCommandInArguments,
     CommandWithoutRegisteredMissing,
+    CommandWithoutRequiredArgument,
 )
 from CLI.parsers import BaseParser
 from CLI.validaters import BaseValidater
@@ -29,6 +30,7 @@ class CLI:
         _help: str = None,
         params_help: dict = None,
         alias: list = None,
+        required: list = None,
     ) -> callable:
         def decorator(func):
             self.commands[name] = {
@@ -36,7 +38,7 @@ class CLI:
                 "expose": expose, "expose_prompt": expose_prompt,
                 "expose_yes_tag": expose_yes_tag, "expose_no_tag": expose_no_tag,
                 "_help": _help, "params_help": params_help,
-                "alias": alias,
+                "alias": alias, "required": required,
             }
             return func
         return decorator
@@ -74,15 +76,28 @@ class CLI:
             expose_prompt = func_info.get("expose_prompt")
             expose_yes_tag = func_info.get("expose_yes_tag")
             expose_no_tag = func_info.get("expose_no_tag")
+            required = func_info.get("required")
 
             args = args[1:]
             params, args = self.base_parser.parse_params(args)
 
             sig = inspect.signature(func)
-            missing = [
-                name for name, p in sig.parameters.items()
-                if name not in params and p.default is inspect.Parameter.empty
-            ]
+            if self.base_validator.validate_set_required_params(
+                    sig_parameters=sig.parameters.items(),
+                    params=params, required=required
+            ):
+                raise CommandWithoutRequiredArgument(
+                    required=self.base_parser.parse_set_required_exception(
+                        sig_parameters=sig.parameters.items(),
+                        params=params, required=required
+                    )
+                )
+
+            missing = self.base_parser.parse_missing(
+                parameters=sig.parameters.items(), params=params,
+                inspect_parameter=inspect.Parameter.empty
+            )
+
             if self.base_validator.validate_missing(missing=missing):
                 raise CommandWithoutRegisteredMissing(missing=", ".join(missing))
 
