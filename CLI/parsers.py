@@ -42,8 +42,26 @@ class BaseParser:
 
     @staticmethod
     def parse_args(argv: list, debugging: bool, fake_args: list) -> list:
-        args = argv[1:]
+        args = argv[0:]
         if debugging and fake_args:
             args = fake_args
 
         return args
+
+    @staticmethod
+    def parse_missing(parameters: dict, params: list, inspect_parameter: callable) -> list:
+        return [
+            name for name, p in parameters
+            if name not in params and p.default is inspect_parameter
+        ]
+
+    @staticmethod
+    def parse_set_required_exception(sig_parameters: dict, params: list, required: list):
+        req_parameters = [name for name, p in sig_parameters if name in params]
+
+        res = list()
+        for param in required:
+            if param not in req_parameters:
+                res.append(param)
+
+        return res
