@@ -89,3 +89,9 @@ class BaseValidater:
         if "--g-help-with-cli" in args:
             return True
         return False
+
+    @staticmethod
+    def validate_set_required_params(sig_parameters: dict, params: list, required: list) -> bool:
+        if [name for name, p in sig_parameters if name in params] != required and required:
+            return True
+        return False
