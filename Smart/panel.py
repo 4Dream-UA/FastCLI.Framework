@@ -7,7 +7,7 @@ class Panel:
         self.base_color = Color.white
         self.color_stop = Color.stop
 
-    def new_panel(
+    def new(
         self,
         title: str,
         content: list,
