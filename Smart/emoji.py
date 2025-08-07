@@ -8,7 +8,3 @@ class Emoji:
     awkward = "•͡˘㇁•͡˘"
     bat = "|\ ^._.^ /|"
     koala = "ʕっ•ᴥ•ʔっ"
-
-    class nsfw:
-        butt = "(‿|‿)"
-        tits = "(.)(.)"
