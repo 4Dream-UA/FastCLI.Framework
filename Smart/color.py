@@ -9,9 +9,6 @@ class Color:
     magenta = "\033[35m"
     white = "\033[37m"
 
-    # move it in own file in future
-    bold = "\033[1m"
-    underline = "\033[4m"
 
     @classmethod
     @property
