@@ -1,9 +1,33 @@
 from Smart.color import Color
+from Smart.markdown import Markdown
+from Smart.panel import Panel
+from Smart.emoji import Emoji
+from Smart.progress_bar import ProgressBar
+from Smart.table import Table
 
 
 class Smart:
 
-    @classmethod
     @property
-    def color(cls):
+    def color(self) -> Color:
         return Color()
+
+    @property
+    def panel(self) -> Panel:
+        return Panel()
+
+    @property
+    def emoji(self) -> Emoji:
+        return Emoji()
+
+    @property
+    def markdown(self) -> Markdown:
+        return Markdown()
+
+    @property
+    def table(self) -> Table:
+        return Table()
+
+    @property
+    def progress_bar(self) -> ProgressBar:
+        return ProgressBar()
