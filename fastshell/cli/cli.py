@@ -117,7 +117,7 @@ class CLI:
                     print(f"Command '{cmd}' skipped by user.")
                     continue
                 else:
-                    confirm = input(expose_prompt).strip().lower()
+                    confirm: str = input(expose_prompt).strip().lower()
                     if confirm not in ("y", "yes", expose_yes_tag):
                         print(f"Command '{cmd}' cancelled by user.")
                         continue
