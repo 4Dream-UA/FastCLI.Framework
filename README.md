@@ -1,9 +1,7 @@
 <div align="left" style="position: relative;">
 <img src="https://i.postimg.cc/L5fw0vJq/Chat-GPT-Image-20-2025-12-35-06-removebg-preview.png" align="right" width="30%" style="margin: -20px 0 0 20px;">
 <h1>FASTSHELL.FRAMEWORK</h1>
-<p align="left">
-	<em><code>❯ REPLACE-ME</code></em>
-</p>
+
 <p align="left">
 	<img src="https://img.shields.io/github/license/4Dream-UA/FastShell.Framework?style=default&logo=opensourceinitiative&logoColor=white&color=0080ff" alt="license">
 	<img src="https://img.shields.io/github/last-commit/4Dream-UA/FastShell.Framework?style=default&logo=git&logoColor=white&color=0080ff" alt="last-commit">
@@ -139,3 +137,4 @@ Soon...
 This project is protected under the MIT License. For more details, refer to the [LICENSE](https://github.com/4Dream-UA/FastShell.Framework/blob/main/LICENSE) file.
 
 ---
+
