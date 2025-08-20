@@ -20,7 +20,7 @@ class CLI:
         self._parser: BaseParser = BaseParser()
         self._validator: BaseValidater = BaseValidater()
 
-
+    # TODO: Replace Any with a real return type
     def command(
         self,
         name: str,
