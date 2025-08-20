@@ -9,8 +9,8 @@ from .errors import (
     CommandWithoutRegisteredMissing,
     CommandWithoutRequiredArgument,
 )
-from CLI.parsers import BaseParser
-from CLI.validaters import BaseValidater
+from .parsers import BaseParser
+from .validaters import BaseValidater
 
 
 class CLI:
