@@ -22,25 +22,30 @@ class CLI:
 
     # TODO: Replace Any with a real return type
     def command(
-        self,
-        name: str,
-        multitypes: bool = False,
-        expose: bool = False,
-        expose_prompt: str = "Do you sure? [y/n] ",
-        expose_yes_tag: str = "--yes",
-        expose_no_tag: str = "--no",
-        _help: str = None,
-        params_help: dict = None,
-        alias: list = None,
-        required: list = None,
-    ) -> callable:
-        def decorator(func):
-            self.commands[name] = {
-                "func": func, "multitypes": multitypes,
-                "expose": expose, "expose_prompt": expose_prompt,
-                "expose_yes_tag": expose_yes_tag, "expose_no_tag": expose_no_tag,
-                "_help": _help, "params_help": params_help,
-                "alias": alias, "required": required,
+            self,
+            name: str,
+            multitypes: bool = False,
+            expose: bool = False,
+            expose_prompt: str = "Do you sure? [y/N]: ",
+            expose_yes_tag: str = "--yes",
+            expose_no_tag: str = "--no",
+            _help: Optional[str] = None,
+            params_help: Optional[Dict[Any, Any]] = None,
+            alias: Optional[List[str]] = None,
+            required: Optional[List[Any]] = None,
+    ) -> Callable[[Any], Any]:
+        def wrapper(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
+            self._commands[name] = {
+                "func": func,
+                "multitypes": multitypes,
+                "expose": expose,
+                "expose_prompt": expose_prompt,
+                "expose_yes_tag": expose_yes_tag,
+                "expose_no_tag": expose_no_tag,
+                "_help": _help,
+                "params_help": params_help,
+                "alias": alias,
+                "required": required,
             }
             return func
         return decorator
