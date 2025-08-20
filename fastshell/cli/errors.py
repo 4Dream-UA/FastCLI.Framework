@@ -1,11 +1,12 @@
 class NoRegisteredCommandsInArguments(Exception):
-
     def __init__(self) -> None:
-        super().__init__("""
-        You do not use any registration commands!
-        If this exception is mistake - just use try-expect...
-        to ignore it.
-        """)
+        super().__init__(
+"""
+You do not use any registration commands!
+If this exception is mistake - just use try-expect...
+to ignore it.
+"""
+        )
 
 
 class UnexpectedCommandInArguments(Exception):
@@ -25,6 +26,7 @@ class CommandWithoutRegisteredMissing(Exception):
         Anyway, just add {missing} missing to your command ...
         like `python file.py foo /: parm1=val1 parm2=val2 :/`.
         """)
+
 
 class CommandWithoutRequiredArgument(Exception):
     def __init__(self, required) -> None:
