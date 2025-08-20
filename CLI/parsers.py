@@ -20,9 +20,14 @@ class BaseParser:
 
     @staticmethod
     def parse_multitypes(multitypes: bool, params: dict) -> dict:
+        print(params)
         if multitypes:
+
             for param_key, param_value in params.items():
-                params[param_key] = ast.literal_eval(param_value)
+                try:
+                    params[param_key] = ast.literal_eval(param_value)
+                except ValueError:
+                    params[param_key] = param_value
 
         return params
 
