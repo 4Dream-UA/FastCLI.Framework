@@ -1,0 +1,13 @@
+[project]
+name = "fastshell"
+version = "1.0.0"
+description = "FastShell is a CLI & TUI framework for Python that makes building command-line tools intuitive and efficient."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.urls]
+source-code = "https://github.com/4Dream-UA/FastShell.Framework"
+
+[tool.coverage.paths]
+source = ["fastshell", "*/site-packages"]
