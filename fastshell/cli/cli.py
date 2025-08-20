@@ -1,7 +1,9 @@
 import sys
 import inspect
 
-from CLI.errors import (
+from typing import Dict, Optional, Callable, Any, List
+
+from .errors import (
     NoRegisteredCommandsInArguments,
     UnexpectedCommandInArguments,
     CommandWithoutRegisteredMissing,
