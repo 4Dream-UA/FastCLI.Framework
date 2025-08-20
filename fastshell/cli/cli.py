@@ -14,7 +14,6 @@ from .validaters import BaseValidater
 
 
 class CLI:
-
     def __init__(self):
         self._commands: Dict[str, Dict[str, Any]] = dict()
         self._parser: BaseParser = BaseParser()
@@ -51,29 +50,29 @@ class CLI:
         return wrapper
 
     def main(self, cli_app: bool = True, debugging: bool = False, fake_args: list = None):
-        args = self.base_parser.parse_args(sys.argv[1:], debugging, fake_args)
+        args = self._parser.parse_args(sys.argv[1:], debugging, fake_args)
 
-        if self.base_validator.validate_g_help(args=args):
+        if self._validator.validate_g_help(args=args):
             args.remove("--g-help")
             self.global_commands_help()
 
-        if self.base_validator.validate_g_help_with_cli(args=args):
+        if self._validator.validate_g_help_with_cli(args=args):
             args.remove("--g-help-with-cli")
             self.global_commands_help(cli_info=True)
 
-        if self.base_validator.validate_not_args(args=args) and cli_app:
+        if self._validator.validate_not_args(args=args) and cli_app:
             raise NoRegisteredCommandsInArguments()
 
         while args:
             cmd = args[0]
-            func_info = self.base_parser.parse_func_info(cmd, self.commands)
+            func_info = self._parser.parse_func_info(cmd, self._commands)
 
-            if self.base_validator.validate_help_calling(args=args):
+            if self._validator.validate_help_calling(args=args):
                 self.command_help(cmd=cmd, func_info=func_info)
                 args = args[2:]
                 continue
 
-            if self.base_validator.validate_not_func(func=func_info):
+            if self._validator.validate_not_func(func=func_info):
                 raise UnexpectedCommandInArguments(cmd=cmd)
 
             func = func_info.get("func")
@@ -85,29 +84,29 @@ class CLI:
             required = func_info.get("required")
 
             args = args[1:]
-            params, args = self.base_parser.parse_params(args)
+            params, args = self._parser.parse_params(args)
 
             sig = inspect.signature(func)
-            if self.base_validator.validate_set_required_params(
+            if self._validator.validate_set_required_params(
                     sig_parameters=sig.parameters.items(),
                     params=params, required=required
             ):
                 raise CommandWithoutRequiredArgument(
-                    required=self.base_parser.parse_set_required_exception(
+                    required=self._parser.parse_set_required_exception(
                         sig_parameters=sig.parameters.items(),
                         params=params, required=required
                     )
                 )
 
-            missing = self.base_parser.parse_missing(
+            missing = self._parser.parse_missing(
                 parameters=sig.parameters.items(), params=params,
                 inspect_parameter=inspect.Parameter.empty
             )
 
-            if self.base_validator.validate_missing(missing=missing):
+            if self._validator.validate_missing(missing=missing):
                 raise CommandWithoutRegisteredMissing(missing=", ".join(missing))
 
-            params = self.base_parser.parse_multitypes(multitypes=multitypes, params=params)
+            params = self._parser.parse_multitypes(multitypes=multitypes, params=params)
 
             if expose:
                 if expose_yes_tag in args:
@@ -124,13 +123,12 @@ class CLI:
 
             print(func(**params))
 
-
     def global_commands_help(self, cli_info: bool = False) -> None:
-        if not self.commands:
+        if not self._commands:
             print("No commands defined.")
             return
 
-        for name, func_info in self.commands.items():
+        for name, func_info in self._commands.items():
             func = func_info.get("func")
             help_text = func_info.get("help", "No help info available.")
             params_help = func_info.get("params_help", {})
