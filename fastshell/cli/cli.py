@@ -176,3 +176,6 @@ class CLI:
 
         for param, value in func_info["params_help"].items():
             print(f"  {param}: {value}")
+
+
+__all__ = ["CLI"]
