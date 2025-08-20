@@ -16,9 +16,9 @@ from .validaters import BaseValidater
 class CLI:
 
     def __init__(self):
-        self.commands = {}
-        self.base_parser = BaseParser()
-        self.base_validator = BaseValidater()
+        self._commands: Dict[str, Dict[str, Any]] = dict()
+        self._parser: BaseParser = BaseParser()
+        self._validator: BaseValidater = BaseValidater()
 
 
     def command(
