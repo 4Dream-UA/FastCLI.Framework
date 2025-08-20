@@ -20,7 +20,7 @@ class BaseParser:
 
     @staticmethod
     def parse_multitypes(multitypes: bool, params: dict) -> dict:
-        print(params)
+
         if multitypes:
 
             for param_key, param_value in params.items():
