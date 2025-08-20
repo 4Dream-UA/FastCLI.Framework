@@ -48,8 +48,7 @@ class CLI:
                 "required": required,
             }
             return func
-        return decorator
-
+        return wrapper
 
     def main(self, cli_app: bool = True, debugging: bool = False, fake_args: list = None):
         args = self.base_parser.parse_args(sys.argv[1:], debugging, fake_args)
