@@ -1,14 +1,14 @@
 import sys
 import inspect
 
-from CLI.errors import (
+from .errors import (
     NoRegisteredCommandsInArguments,
     UnexpectedCommandInArguments,
     CommandWithoutRegisteredMissing,
     CommandWithoutRequiredArgument,
 )
-from CLI.parsers import BaseParser
-from CLI.validaters import BaseValidater
+from .parsers import BaseParser
+from .validaters import BaseValidater
 
 
 class CLI:
