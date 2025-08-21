@@ -1,4 +1,4 @@
-from CLI.cli import CLI
+from fasthell.cli.cli import CLI
 
 
 cli = CLI()
