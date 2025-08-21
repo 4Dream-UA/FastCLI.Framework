@@ -1,14 +1,17 @@
 import sys
 import time
 
+from contextlib import contextmanager
+
 
 class ProgressBar:
+
     total = 100
     length = 50
     desc = "Progress"
     current = 0
     start_time = time.time()
-
+    
     def update(self, step=1):
         self.current = min(self.current + step, self.total)
         self._render()

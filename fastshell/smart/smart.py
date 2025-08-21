@@ -7,6 +7,7 @@ from .table import Table
 
 
 class Smart:
+
     @property
     def color(self) -> Color:
         return Color()
@@ -30,3 +31,13 @@ class Smart:
     @property
     def progress_bar(self) -> ProgressBar:
         return ProgressBar()
+
+    @staticmethod
+    def legacy_shell_init() -> None:
+        import os
+        import sys
+        import ctypes
+
+        kernel32 = ctypes.windll.kernel32
+        kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+

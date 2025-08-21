@@ -1,8 +1,6 @@
 import sys
 import inspect
-
 from typing import Dict, Optional, Callable, Any, List
-
 from .errors import (
     NoRegisteredCommandsInArguments,
     UnexpectedCommandInArguments,
@@ -32,6 +30,7 @@ class CLI:
             params_help: Optional[Dict[Any, Any]] = None,
             alias: Optional[List[str]] = None,
             required: Optional[List[Any]] = None,
+            _return: bool = True,
     ) -> Callable[[Any], Any]:
         def wrapper(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
             self._commands[name] = {
@@ -45,6 +44,7 @@ class CLI:
                 "params_help": params_help,
                 "alias": alias,
                 "required": required,
+                "_return": _return,
             }
             return func
         return wrapper
@@ -82,6 +82,7 @@ class CLI:
             expose_yes_tag = func_info.get("expose_yes_tag")
             expose_no_tag = func_info.get("expose_no_tag")
             required = func_info.get("required")
+            _return = func_info.get("_return")
 
             args = args[1:]
             params, args = self._parser.parse_params(args)
@@ -120,8 +121,11 @@ class CLI:
                     if confirm not in ("y", "yes", expose_yes_tag):
                         print(f"Command '{cmd}' cancelled by user.")
                         continue
+            if _return:
+                print(func(**params))
+                return
+            func(**params)
 
-            print(func(**params))
 
     def global_commands_help(self, cli_info: bool = False) -> None:
         if not self._commands:
@@ -174,6 +178,5 @@ class CLI:
 
         for param, value in func_info["params_help"].items():
             print(f"  {param}: {value}")
-
 
 __all__ = ["CLI"]
