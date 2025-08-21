@@ -1,0 +1,10 @@
+class Emoji:
+    idk = """¯/_(ツ)_/¯"""
+    afraid = "(ㆆ _ ㆆ)"
+    alpha = "α"
+    angel = "☜(⌒▽⌒)☞"
+    angry = "•`_´•"
+    arrowhead = "⤜(ⱺ ʖ̯ⱺ)⤏"
+    awkward = "•͡˘㇁•͡˘"
+    bat = """|\ ^._.^ /|"""
+    koala = "ʕっ•ᴥ•ʔっ"
