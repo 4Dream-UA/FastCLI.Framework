@@ -1,4 +1,4 @@
-from fasthell.cli.cli import CLI
+from fastshell.cli.cli import CLI
 import json
 
 
