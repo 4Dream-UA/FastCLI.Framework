@@ -1,4 +1,4 @@
-from Smart.color import Color
+from .color import Color
 
 
 class Table:

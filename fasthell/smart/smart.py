@@ -1,9 +1,9 @@
-from Smart.color import Color
-from Smart.markdown import Markdown
-from Smart.panel import Panel
-from Smart.emoji import Emoji
-from Smart.progress_bar import ProgressBar
-from Smart.table import Table
+from .color import Color
+from .markdown import Markdown
+from .panel import Panel
+from .emoji import Emoji
+from .progress_bar import ProgressBar
+from .table import Table
 
 
 class Smart:
