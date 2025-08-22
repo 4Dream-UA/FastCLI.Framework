@@ -3,11 +3,11 @@ from .color import Color
 
 class Table:
     def __init__(self):
-        self.base_border_char = "-"
-        self.base_color = Color.white
-        self.color_stop = Color.stop
-        self.column_separator = "|"
-        self.missing_value = "None"
+        self.base_border_char: str = "-"
+        self.base_color: Color = Color.white
+        self.color_stop: Color = Color.stop
+        self.column_separator: str = "|"
+        self.missing_value: str = "None"
 
     def new(
             self,
@@ -42,20 +42,26 @@ class Table:
 
         col_widths = []
         for header, col in zip(headers, padded_columns):
-            max_content_width = max(len(str(item)) if item is not None else len(self.missing_value)
+            max_content_width = max(len(str(item)) if item is not None else
+                                    len(self.missing_value)
                                     for item in col["content"])
             col_widths.append(max(len(header), max_content_width))
 
         def format_row(row_items, color):
             colored_items = []
             for item, width in zip(row_items, col_widths):
-                display_value = self.missing_value if item is None else str(item)
-                colored_item = f"{color}{display_value:<{width}}{self.color_stop}"
+                display_value = (self.missing_value
+                                 if item is None else str(item))
+                colored_item = (f"{color}{display_value:<{width}}"
+                                f"{self.color_stop}")
                 colored_items.append(colored_item)
             return f" {self.column_separator} ".join(colored_items)
 
         separator_items = [border_char * width for width in col_widths]
-        separator = f"{border_color}{f' {border_char * 3} '.join(separator_items)}{self.color_stop}"
+        separator = (
+            f"{border_color}"
+            f"{f' {border_char * 3} '.join(separator_items)}{self.color_stop}"
+        )
 
         sample += "\n" * padding
         sample += "\n" + format_row(headers, header_color)
