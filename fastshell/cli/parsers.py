@@ -1,10 +1,14 @@
 import ast
+from typing import (
+    Optional, Callable, Any,
+    List, Dict,
+)
 
 
 class BaseParser:
 
     @staticmethod
-    def parse_params(args: list) -> dict:
+    def parse_params(args: List[str]) -> Dict[str, str]:
         if "/:" not in args or ":/" not in args:
             return {}, args
 
@@ -12,14 +16,18 @@ class BaseParser:
         end = args.index(":/", start)
         params = {
             k.strip(): v.strip('"').strip("'")
-            for k, v in (arg.split("=", 1) for arg in args[start:end] if "=" in arg)
+            for k, v in
+            (arg.split("=", 1) for arg in args[start:end] if "=" in arg)
         }
         remaining_args = args[end + 1:]
 
         return params, remaining_args
 
     @staticmethod
-    def parse_multitypes(multitypes: bool, params: dict) -> dict:
+    def parse_multitypes(
+            multitypes: bool,
+            params: Dict[str, str],
+    ) -> dict:
 
         if multitypes:
 
@@ -32,7 +40,10 @@ class BaseParser:
         return params
 
     @staticmethod
-    def parse_func_info(cmd: str, commands: dict) -> dict:
+    def parse_func_info(
+            cmd: str,
+            commands: Dict[str, str],
+    ) -> Dict[str, str]:
         func_info = commands.get(cmd)
 
         if func_info is None:
@@ -46,7 +57,11 @@ class BaseParser:
         return func_info
 
     @staticmethod
-    def parse_args(argv: list, debugging: bool, fake_args: list) -> list:
+    def parse_args(
+            argv: List[str],
+            fake_args: List[str],
+            debugging: bool,
+    ) -> List[str]:
         args = argv[0:]
         if debugging and fake_args:
             args = fake_args
@@ -54,17 +69,25 @@ class BaseParser:
         return args
 
     @staticmethod
-    def parse_missing(parameters: dict, params: list, inspect_parameter: callable) -> list:
+    def parse_missing(
+            parameters: Dict[str, str],
+            params: List[str],
+            inspect_parameter: Callable[[Any], Any],
+    ) -> List[Optional[str]]:
         return [
             name for name, p in parameters
             if name not in params and p.default is inspect_parameter
         ]
 
     @staticmethod
-    def parse_set_required_exception(sig_parameters: dict, params: list, required: list):
+    def parse_set_required_exception(
+            sig_parameters: Dict[str, str],
+            params: List[str],
+            required: List[str],
+    ) -> List[str]:
         req_parameters = [name for name, p in sig_parameters if name in params]
 
-        res = list()
+        res: List[str] = list()
         for param in required:
             if param not in req_parameters:
                 res.append(param)
