@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Markdown:
     stop = "\033[0m"
 
@@ -13,7 +16,7 @@ class Markdown:
         }
 
     @classmethod
-    def markdown_it(cls, text: str, marker: list) -> str:
+    def markdown_it(cls, text: str, marker: List[str]) -> str:
         for mark in marker:
             if mark in cls.markdown_list():
                 text = f"{cls.markdown_list()[mark]}{text}{cls.stop}"
