@@ -1,6 +1,9 @@
 import sys
 import inspect
-from typing import Dict, Optional, Callable, Any, List
+from typing import (
+    Optional, Callable, Any,
+    Dict, List,
+)
 from .errors import (
     NoRegisteredCommandsInArguments,
     UnexpectedCommandInArguments,
@@ -17,7 +20,6 @@ class CLI:
         self._parser: BaseParser = BaseParser()
         self._validator: BaseValidater = BaseValidater()
 
-    # TODO: Replace Any with a real return type
     def command(
             self,
             name: str,
@@ -27,7 +29,7 @@ class CLI:
             expose_yes_tag: str = "--yes",
             expose_no_tag: str = "--no",
             _help: Optional[str] = None,
-            params_help: Optional[Dict[Any, Any]] = None,
+            params_help: Optional[Dict[str, str]] = None,
             alias: Optional[List[str]] = None,
             required: Optional[List[Any]] = None,
             _return: bool = True,
@@ -49,18 +51,38 @@ class CLI:
             return func
         return wrapper
 
-    def main(self, cli_app: bool = True, debugging: bool = False, fake_args: list = None):
-        args = self._parser.parse_args(sys.argv[1:], debugging, fake_args)
+    def main(
+            self,
+            cli_app: bool = True,
+            debugging: bool = False,
+            fake_args: Optional[List[str]] = None
+    ) -> None:
+        args = self._parser.parse_args(
+            argv=sys.argv[1:],
+            debugging=debugging,
+            fake_args=fake_args,
+        )
+
+        flags_using: List[str] = []
 
         if self._validator.validate_g_help(args=args):
             args.remove("--g-help")
+            flags_using.append(
+                self._validator.validate_g_help(args=args)
+            )
             self.global_commands_help()
 
         if self._validator.validate_g_help_with_cli(args=args):
             args.remove("--g-help-with-cli")
+            flags_using.append(
+                self._validator.validate_g_help_with_cli(args=args)
+            )
             self.global_commands_help(cli_info=True)
 
-        if self._validator.validate_not_args(args=args) and cli_app:
+        if (
+                self._validator.validate_not_args(args=args)
+                and cli_app and any(flags_using)
+        ):
             raise NoRegisteredCommandsInArguments()
 
         while args:
@@ -75,7 +97,7 @@ class CLI:
             if self._validator.validate_not_func(func=func_info):
                 raise UnexpectedCommandInArguments(cmd=cmd)
 
-            func = func_info.get("func")
+            func: Callable[[Any], Any] = func_info.get("func")
             multitypes = func_info.get("multitypes")
             expose = func_info.get("expose")
             expose_prompt = func_info.get("expose_prompt")
@@ -105,9 +127,14 @@ class CLI:
             )
 
             if self._validator.validate_missing(missing=missing):
-                raise CommandWithoutRegisteredMissing(missing=", ".join(missing))
+                raise CommandWithoutRegisteredMissing(
+                    missing=", ".join(missing)
+                )
 
-            params = self._parser.parse_multitypes(multitypes=multitypes, params=params)
+            params = self._parser.parse_multitypes(
+                multitypes=multitypes,
+                params=params
+            )
 
             if expose:
                 if expose_yes_tag in args:
@@ -126,8 +153,11 @@ class CLI:
                 return
             func(**params)
 
+    def global_commands_help(
+            self,
+            cli_info: bool = False
+    ) -> None:
 
-    def global_commands_help(self, cli_info: bool = False) -> None:
         if not self._commands:
             print("No commands defined.")
             return
@@ -160,7 +190,10 @@ class CLI:
             print()
 
     @staticmethod
-    def command_help(cmd: str, func_info: dict) -> None:
+    def command_help(
+            cmd: str,
+            func_info: Dict[str, Any]
+    ) -> None:
 
         if not func_info:
             print(f"{cmd}: Unknown command.")
@@ -178,5 +211,6 @@ class CLI:
 
         for param, value in func_info["params_help"].items():
             print(f"  {param}: {value}")
+
 
 __all__ = ["CLI"]
