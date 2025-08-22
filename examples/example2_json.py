@@ -1,11 +1,15 @@
 from fastshell.cli.cli import CLI
 import json
-
+from typing import Dict
 
 cli = CLI()
 
 @cli.command("make_json", alias=["mjson"], _return=False, multitypes=True)
-def make_json_from_dict(data: dict, file: str = "json.json") -> bool:
+def make_json_from_dict(
+        data: Dict[str, str],
+        file: str = "json.json"
+) -> bool:
+
     """
     :param data:
     :param file:
