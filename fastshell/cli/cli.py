@@ -15,6 +15,14 @@ from .validaters import BaseValidater
 
 
 class CLI:
+    """
+    It is the main class for create cli application.
+    Public methods:
+    1. command: decorator for registered cli commands
+    2. main: function that initialize main process of cli
+        and run registered commands
+    """
+
     def __init__(self):
         self._commands: Dict[str, Dict[str, Any]] = dict()
         self._parser: BaseParser = BaseParser()
@@ -57,6 +65,24 @@ class CLI:
             debugging: bool = False,
             fake_args: Optional[List[str]] = None
     ) -> None:
+        """
+        :param cli_app:
+        With False value validater validate_not_args will
+            be ignored. It is mean that you can run python
+            file without calling cli function in shell.
+        :param debugging:
+        True value activated debugging mode. It is mean
+            that you can set fake_args, and they will be
+            using like real shell args
+        :param fake_args:
+        With debugging mode activated main function will
+            take fake_args as real shell args.
+        :return None:
+
+        This function is for run all required process
+        and initialize cli commands
+        """
+
         args = self._parser.parse_args(
             argv=sys.argv[1:],
             debugging=debugging,
