@@ -92,22 +92,22 @@ class CLI:
         flags_using: List[str] = []
 
         if self._validator.validate_g_help(args=args):
-            args.remove("--g-help")
             flags_using.append(
                 self._validator.validate_g_help(args=args)
             )
-            self.global_commands_help()
+            self.__global_commands_help()
+            args.remove("--g-help")
 
         if self._validator.validate_g_help_with_cli(args=args):
-            args.remove("--g-help-with-cli")
             flags_using.append(
                 self._validator.validate_g_help_with_cli(args=args)
             )
-            self.global_commands_help(cli_info=True)
+            self.__global_commands_help(cli_info=True)
+            args.remove("--g-help-with-cli")
 
         if (
                 self._validator.validate_not_args(args=args)
-                and cli_app and any(flags_using)
+                and cli_app and not any(flags_using)
         ):
             raise NoRegisteredCommandsInArguments()
 
@@ -116,7 +116,7 @@ class CLI:
             func_info = self._parser.parse_func_info(cmd, self._commands)
 
             if self._validator.validate_help_calling(args=args):
-                self.command_help(cmd=cmd, func_info=func_info)
+                self.__command_help(cmd=cmd, func_info=func_info)
                 args = args[2:]
                 continue
 
@@ -162,24 +162,20 @@ class CLI:
                 params=params
             )
 
-            if expose:
-                if expose_yes_tag in args:
-                    args.remove(expose_yes_tag)
-                elif expose_no_tag in args:
-                    args.remove(expose_no_tag)
-                    print(f"Command '{cmd}' skipped by user.")
-                    continue
-                else:
-                    confirm: str = input(expose_prompt).strip().lower()
-                    if confirm not in ("y", "yes", expose_yes_tag):
-                        print(f"Command '{cmd}' cancelled by user.")
-                        continue
-            if _return:
-                print(func(**params))
-                return
-            func(**params)
+            args, _continue = self._parser.parse_expose(
+                args=args,
+                expose=expose,
+                expose_yes_tag=expose_yes_tag,
+                expose_no_tag=expose_no_tag,
+                expose_prompt=expose_prompt,
+            )
 
-    def global_commands_help(
+            if not _continue:
+                continue
+
+            self.__run(func=func, params=params, _return=_return)
+
+    def __global_commands_help(
             self,
             cli_info: bool = False
     ) -> None:
@@ -216,7 +212,7 @@ class CLI:
             print()
 
     @staticmethod
-    def command_help(
+    def __command_help(
             cmd: str,
             func_info: Dict[str, Any]
     ) -> None:
@@ -237,6 +233,17 @@ class CLI:
 
         for param, value in func_info["params_help"].items():
             print(f"  {param}: {value}")
+
+    @staticmethod
+    def __run(
+            func: Callable,
+            params: Dict[str, Any],
+            _return: bool,
+    ) -> None:
+        if _return:
+            print(func(**params))
+            return
+        func(**params)
 
 
 __all__ = ["CLI"]
