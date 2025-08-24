@@ -1,4 +1,5 @@
 from .color import Color
+from typing import List
 
 
 class Panel:
@@ -10,7 +11,7 @@ class Panel:
     def new(
         self,
         title: str,
-        content: list,
+        content: List[str],
         padding: int = 0,
         width: int = 30,
         border_char: str = None,
@@ -23,7 +24,9 @@ class Panel:
 
         horizontal_border = border_char * width
         panel += "\n" * padding
-        top_line = f"{border_color}{horizontal_border} {title} {horizontal_border}{self.color_stop}"
+        top_line = (f"{border_color}{horizontal_border} "
+                    f" {title} "
+                    f"{horizontal_border}{self.color_stop}")
 
         panel += "\n" + top_line
 
@@ -35,11 +38,17 @@ class Panel:
             item_padding = item.get("padding", 0)
 
             line = f"{item_color}{item_title}: {item_text}{self.color_stop}"
-            padded_line = (" " * item_padding) + line if content[0] is item else "\n" + (" " * item_padding) + line
+            padded_line = ((" " * item_padding) +
+                           line) if content[0] is item else (
+                    "\n" + (" " * item_padding) + line)
 
             panel += "\n" + padded_line
 
-        bottom_line = f"{border_color}{border_char * (len(top_line) - len(self.color_stop) - 5)}{self.color_stop}"
+        bottom_line = (
+            f"{border_color}"
+            f"{border_char * (len(top_line) - len(self.color_stop) - 5)}"
+            f"{self.color_stop}"
+        )
         panel += "\n" + bottom_line
 
         return panel

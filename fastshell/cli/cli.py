@@ -1,6 +1,9 @@
 import sys
 import inspect
-from typing import Dict, Optional, Callable, Any, List
+from typing import (
+    Optional, Callable, Any,
+    Dict, List,
+)
 from .errors import (
     NoRegisteredCommandsInArguments,
     UnexpectedCommandInArguments,
@@ -12,12 +15,19 @@ from .validaters import BaseValidater
 
 
 class CLI:
+    """
+    It is the main class for create cli application.
+    Public methods:
+    1. command: decorator for registered cli commands
+    2. main: function that initialize main process of cli
+        and run registered commands
+    """
+
     def __init__(self):
         self._commands: Dict[str, Dict[str, Any]] = dict()
         self._parser: BaseParser = BaseParser()
         self._validator: BaseValidater = BaseValidater()
 
-    # TODO: Replace Any with a real return type
     def command(
             self,
             name: str,
@@ -27,7 +37,7 @@ class CLI:
             expose_yes_tag: str = "--yes",
             expose_no_tag: str = "--no",
             _help: Optional[str] = None,
-            params_help: Optional[Dict[Any, Any]] = None,
+            params_help: Optional[Dict[str, str]] = None,
             alias: Optional[List[str]] = None,
             required: Optional[List[Any]] = None,
             _return: bool = True,
@@ -49,18 +59,56 @@ class CLI:
             return func
         return wrapper
 
-    def main(self, cli_app: bool = True, debugging: bool = False, fake_args: list = None):
-        args = self._parser.parse_args(sys.argv[1:], debugging, fake_args)
+    def main(
+            self,
+            cli_app: bool = True,
+            debugging: bool = False,
+            fake_args: Optional[List[str]] = None
+    ) -> None:
+        """
+        :param cli_app:
+        With False value validater validate_not_args will
+            be ignored. It is mean that you can run python
+            file without calling cli function in shell.
+        :param debugging:
+        True value activated debugging mode. It is mean
+            that you can set fake_args, and they will be
+            using like real shell args
+        :param fake_args:
+        With debugging mode activated main function will
+            take fake_args as real shell args.
+        :return None:
+
+        This function is for run all required process
+        and initialize cli commands
+        """
+
+        args = self._parser.parse_args(
+            argv=sys.argv[1:],
+            debugging=debugging,
+            fake_args=fake_args,
+        )
+
+        flags_using: List[str] = []
 
         if self._validator.validate_g_help(args=args):
+            flags_using.append(
+                self._validator.validate_g_help(args=args)
+            )
+            self.__global_commands_help()
             args.remove("--g-help")
-            self.global_commands_help()
 
         if self._validator.validate_g_help_with_cli(args=args):
+            flags_using.append(
+                self._validator.validate_g_help_with_cli(args=args)
+            )
+            self.__global_commands_help(cli_info=True)
             args.remove("--g-help-with-cli")
-            self.global_commands_help(cli_info=True)
 
-        if self._validator.validate_not_args(args=args) and cli_app:
+        if (
+                self._validator.validate_not_args(args=args)
+                and cli_app and not any(flags_using)
+        ):
             raise NoRegisteredCommandsInArguments()
 
         while args:
@@ -68,14 +116,14 @@ class CLI:
             func_info = self._parser.parse_func_info(cmd, self._commands)
 
             if self._validator.validate_help_calling(args=args):
-                self.command_help(cmd=cmd, func_info=func_info)
+                self.__command_help(cmd=cmd, func_info=func_info)
                 args = args[2:]
                 continue
 
             if self._validator.validate_not_func(func=func_info):
                 raise UnexpectedCommandInArguments(cmd=cmd)
 
-            func = func_info.get("func")
+            func: Callable[[Any], Any] = func_info.get("func")
             multitypes = func_info.get("multitypes")
             expose = func_info.get("expose")
             expose_prompt = func_info.get("expose_prompt")
@@ -105,29 +153,33 @@ class CLI:
             )
 
             if self._validator.validate_missing(missing=missing):
-                raise CommandWithoutRegisteredMissing(missing=", ".join(missing))
+                raise CommandWithoutRegisteredMissing(
+                    missing=", ".join(missing)
+                )
 
-            params = self._parser.parse_multitypes(multitypes=multitypes, params=params)
+            params = self._parser.parse_multitypes(
+                multitypes=multitypes,
+                params=params
+            )
 
-            if expose:
-                if expose_yes_tag in args:
-                    args.remove(expose_yes_tag)
-                elif expose_no_tag in args:
-                    args.remove(expose_no_tag)
-                    print(f"Command '{cmd}' skipped by user.")
-                    continue
-                else:
-                    confirm: str = input(expose_prompt).strip().lower()
-                    if confirm not in ("y", "yes", expose_yes_tag):
-                        print(f"Command '{cmd}' cancelled by user.")
-                        continue
-            if _return:
-                print(func(**params))
-                return
-            func(**params)
+            args, _continue = self._parser.parse_expose(
+                args=args,
+                expose=expose,
+                expose_yes_tag=expose_yes_tag,
+                expose_no_tag=expose_no_tag,
+                expose_prompt=expose_prompt,
+            )
 
+            if not _continue:
+                continue
 
-    def global_commands_help(self, cli_info: bool = False) -> None:
+            self.__run(func=func, params=params, _return=_return)
+
+    def __global_commands_help(
+            self,
+            cli_info: bool = False
+    ) -> None:
+
         if not self._commands:
             print("No commands defined.")
             return
@@ -160,7 +212,10 @@ class CLI:
             print()
 
     @staticmethod
-    def command_help(cmd: str, func_info: dict) -> None:
+    def __command_help(
+            cmd: str,
+            func_info: Dict[str, Any]
+    ) -> None:
 
         if not func_info:
             print(f"{cmd}: Unknown command.")
@@ -178,5 +233,17 @@ class CLI:
 
         for param, value in func_info["params_help"].items():
             print(f"  {param}: {value}")
+
+    @staticmethod
+    def __run(
+            func: Callable,
+            params: Dict[str, Any],
+            _return: bool,
+    ) -> None:
+        if _return:
+            print(func(**params))
+            return
+        func(**params)
+
 
 __all__ = ["CLI"]

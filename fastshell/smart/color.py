@@ -9,7 +9,6 @@ class Color:
     magenta = "\033[35m"
     white = "\033[37m"
 
-
     @classmethod
     @property
     def color_dict(cls):
@@ -25,6 +24,10 @@ class Color:
 
     @classmethod
     def input(cls, prompt: str, color: str, output_color: str) -> str:
-        input_ = input(f"{cls.color_dict.get(color)}{prompt}{cls.stop}{cls.color_dict.get(output_color)}")
+        input_ = input(
+            f"{cls.color_dict.get(color)}"
+            f"{prompt}{cls.stop}"
+            f"{cls.color_dict.get(output_color)}"
+        )
         print(cls.stop, sep="", end="")
         return cls.colorize(color=output_color, text=input_)

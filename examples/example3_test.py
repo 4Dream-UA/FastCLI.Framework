@@ -28,7 +28,7 @@ def echo(msg: str) -> str:
     return f"ECHO: {msg}"
 
 
-def test_add_command(capfd):
+def test_add_command(capfd) -> None:
     cli.main(
         debugging=True,
         fake_args=["add", "/:", "fn=4", "sn=8", ":/"]
@@ -38,12 +38,12 @@ def test_add_command(capfd):
     assert err == ""
 
 
-def test_echo_command(capfd):
+def test_echo_command(capfd) -> None:
     cli.main(
         debugging=True,
         fake_args=["echo", "/:", "msg=Hello", ":/"]
     )
     out, err = capfd.readouterr()
-    print(out)
+    print(capfd)
     assert "ECHO: Hello" in out
     assert err == ""

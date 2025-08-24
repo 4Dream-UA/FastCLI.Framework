@@ -1,7 +1,13 @@
+from typing import (
+    Optional, Callable, Any,
+    List, Dict,
+)
+
+
 class BaseValidater:
 
     @staticmethod
-    def validate_not_args(args: list) -> bool:
+    def validate_not_args(args: List[Optional[str]]) -> bool:
 
         """
         This validater used for raise NoRegisteredCommandsInArguments ...
@@ -16,7 +22,7 @@ class BaseValidater:
         return False
 
     @staticmethod
-    def validate_not_func(func: callable) -> bool:
+    def validate_not_func(func: Callable[[Any], Any]) -> bool:
 
         """
         This validator used for raise UnexpectedCommandInArguments ...
@@ -31,7 +37,7 @@ class BaseValidater:
         return False
 
     @staticmethod
-    def validate_missing(missing: list) -> bool:
+    def validate_missing(missing: List[Optional[str]]) -> bool:
 
         """
         This validator used for raise CommandWithoutRegisteredMissing ...
@@ -46,7 +52,7 @@ class BaseValidater:
         return False
 
     @staticmethod
-    def validate_help_calling(args: list) -> bool:
+    def validate_help_calling(args: List[str]) -> bool:
 
         """
         This validator used for call self.command_help ...
@@ -61,7 +67,7 @@ class BaseValidater:
         return False
 
     @staticmethod
-    def validate_g_help(args: list) -> bool:
+    def validate_g_help(args: List[str]) -> bool:
 
         """
         This validator used for call self.global_commands_help ...
@@ -70,13 +76,12 @@ class BaseValidater:
         :param args:
         :return:
         """
-
         if "--g-help" in args:
             return True
         return False
 
     @staticmethod
-    def validate_g_help_with_cli(args: list) -> bool:
+    def validate_g_help_with_cli(args: List[str]) -> bool:
 
         """
         This validator used for call self.global_commands_help ...
@@ -91,7 +96,25 @@ class BaseValidater:
         return False
 
     @staticmethod
-    def validate_set_required_params(sig_parameters: dict, params: list, required: list) -> bool:
-        if [name for name, p in sig_parameters if name in params] != required and required:
+    def validate_set_required_params(
+            sig_parameters: Dict[str, str],
+            params: List[str],
+            required: List[str],
+    ) -> bool:
+
+        """
+        This validator used for select from all ...
+        parameters only required
+
+        :param sig_parameters:
+        :param params:
+        :param required:
+        :return:
+        """
+        if (
+                [
+                    name for name, p in sig_parameters if name in params
+                ] != required and required
+        ):
             return True
         return False

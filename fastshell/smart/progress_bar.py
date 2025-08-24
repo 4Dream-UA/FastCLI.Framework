@@ -1,17 +1,15 @@
 import sys
 import time
 
-from contextlib import contextmanager
-
 
 class ProgressBar:
 
-    total = 100
-    length = 50
-    desc = "Progress"
-    current = 0
-    start_time = time.time()
-    
+    total: int = 100
+    length: int = 50
+    desc: str = "Progress"
+    current: int = 0
+    start_time: time = time.time()
+
     def update(self, step=1):
         self.current = min(self.current + step, self.total)
         self._render()
@@ -21,7 +19,9 @@ class ProgressBar:
         filled = int(self.length * percent)
         bar = "█" * filled + "-" * (self.length - filled)
         elapsed = time.time() - self.start_time
-        sys.stdout.write(f"\r{self.desc}: [{bar}] {percent:.1%} | Time: {elapsed:.1f}s")
+        sys.stdout.write(
+            f"\r{self.desc}: [{bar}] {percent:.1%} | Time: {elapsed:.1f}s"
+        )
         sys.stdout.flush()
 
     def __enter__(self):

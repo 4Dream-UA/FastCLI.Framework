@@ -1,6 +1,6 @@
 [project]
 name = "fastshell"
-version = "1.0.0"
+version = "0.1.0a2"
 description = "FastShell is a CLI & TUI framework for Python that makes building command-line tools intuitive and efficient."
 readme = "README.md"
 requires-python = ">=3.12"

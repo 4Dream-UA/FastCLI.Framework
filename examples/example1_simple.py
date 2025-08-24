@@ -1,11 +1,16 @@
 from fastshell.cli.cli import CLI
+from typing import List
 
 
 cli = CLI()
 
 
 @cli.command("greeting", multitypes=True)
-def greet_list(people: list, people_count: int) -> int:
+def greet_list(
+        people: List[str],
+        people_count: int
+) -> int:
+
     """
     :param people:
     :param people_count:

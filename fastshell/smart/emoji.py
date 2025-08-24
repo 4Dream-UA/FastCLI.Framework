@@ -6,5 +6,5 @@ class Emoji:
     angry = "•`_´•"
     arrowhead = "⤜(ⱺ ʖ̯ⱺ)⤏"
     awkward = "•͡˘㇁•͡˘"
-    bat = """|\ ^._.^ /|"""
+    bat = """|/ ^._.^ /|"""
     koala = "ʕっ•ᴥ•ʔっ"
