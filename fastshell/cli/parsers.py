@@ -93,3 +93,27 @@ class BaseParser:
                 res.append(param)
 
         return res
+
+    @staticmethod
+    def parse_expose(
+            args: List[str],
+            expose: str,
+            expose_yes_tag: str,
+            expose_no_tag: str,
+            expose_prompt: str
+    ) -> List[str] | bool:
+        argv = args.copy()
+
+        if expose:
+            if expose_yes_tag in argv:
+                argv.remove(expose_yes_tag)
+                return argv, True
+            elif expose_no_tag in argv:
+                argv.remove(expose_no_tag)
+                print(f"Command '{cmd}' skipped by user.")
+            else:
+                confirm: str = input(expose_prompt).strip().lower()
+                if confirm not in ("y", "yes", expose_yes_tag):
+                    print(f"Command '{cmd}' cancelled by user.")
+            return argv, False
+        return argv, False
