@@ -8,6 +8,7 @@
 	<img src="https://img.shields.io/github/languages/top/4Dream-UA/FastShell.Framework?style=default&color=0080ff" alt="repo-top-language">
 	<img src="https://img.shields.io/github/languages/count/4Dream-UA/FastShell.Framework?style=default&color=0080ff" alt="repo-language-count">
 </p>
+<a href="https://discord.gg/6MbYCn2MpH">4Dream Community</a>
 <p align="left"><!-- default option, no dependency badges. -->
 </p>
 <p align="left">
@@ -137,4 +138,5 @@ Soon...
 This project is protected under the MIT License. For more details, refer to the [LICENSE](https://github.com/4Dream-UA/FastShell.Framework/blob/main/LICENSE) file.
 
 ---
+
 
