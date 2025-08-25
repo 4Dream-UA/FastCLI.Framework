@@ -1,7 +1,7 @@
 import ast
 from typing import (
     Optional, Callable, Any,
-    List, Dict,
+    List, Dict, Tuple,
 )
 
 
@@ -100,7 +100,7 @@ class BaseParser:
             expose: str,
             expose_yes_tag: str,
             expose_no_tag: str,
-            expose_prompt: str
+            expose_prompt: str,
     ) -> List[str] | bool:
         argv = args.copy()
 
@@ -111,9 +111,28 @@ class BaseParser:
             elif expose_no_tag in argv:
                 argv.remove(expose_no_tag)
                 print(f"Command '{cmd}' skipped by user.")
+                return argv, False
             else:
                 confirm: str = input(expose_prompt).strip().lower()
                 if confirm not in ("y", "yes", expose_yes_tag):
                     print(f"Command '{cmd}' cancelled by user.")
             return argv, False
         return argv, False
+
+    @staticmethod
+    def parser_global_flags(
+            args: List[str],
+            flag_definitions: List[Tuple[Callable, str, bool]],
+    ) -> List[str] | List[bool]:
+        args_copy = args.copy()
+        flags_using = []
+
+        for validator_fn, option_name, cli_info in flag_definitions:
+            flag = validator_fn(args=args_copy)
+            if flag:
+                flags_using.append(flag)
+                self.__global_commands_help(cli_info=cli_info)
+
+                args_copy.remove(option_name)
+
+        return args_copy, flags_using
