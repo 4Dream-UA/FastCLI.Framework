@@ -83,27 +83,18 @@ class CLI:
         and initialize cli commands
         """
 
-        args = self._parser.parse_args(
-            argv=sys.argv[1:],
-            debugging=debugging,
-            fake_args=fake_args,
+
+        args, flags_using = self._parser.parser_global_flags(
+            args=self._parser.parse_args(
+                argv=sys.argv[1:],
+                debugging=debugging,
+                fake_args=fake_args,
+            ),
+            flag_definitions=[
+                (self._validator.validate_g_help, "--g-help", False),
+                (self._validator.validate_g_help_with_cli, "--g-help-with-cli", True),
+            ],
         )
-
-        flags_using: List[str] = []
-
-        if self._validator.validate_g_help(args=args):
-            flags_using.append(
-                self._validator.validate_g_help(args=args)
-            )
-            self.__global_commands_help()
-            args.remove("--g-help")
-
-        if self._validator.validate_g_help_with_cli(args=args):
-            flags_using.append(
-                self._validator.validate_g_help_with_cli(args=args)
-            )
-            self.__global_commands_help(cli_info=True)
-            args.remove("--g-help-with-cli")
 
         if (
                 self._validator.validate_not_args(args=args)
@@ -170,7 +161,7 @@ class CLI:
                 expose_prompt=expose_prompt,
             )
 
-            if not _continue:
+            if _continue:
                 continue
 
             self.__run(func=func, params=params, _return=_return)
